@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Auction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #bidEntry {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        button {
+            width: 30%;
+            padding: 10px;
+            font-size: 18px;
+            margin: 5px;
+        }
+        #suggestion, #currentBid {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Property Auction</h1>
+    <div id="currentBid">Current Bid: $0</div>
+    <input type="number" id="bidEntry" placeholder="Enter your bid">
+    <div>
+        <button onclick="submitBid()">Submit Bid</button>
+        <button onclick="resetAuction()">Reset</button>
+    </div>
+    <div id="suggestion"></div>
+    <div id="numpad">
+        <button onclick="addToEntry(7)">7</button>
+        <button onclick="addToEntry(8)">8</button>
+        <button onclick="addToEntry(9)">9</button>
+        <button onclick="addToEntry(4)">4</button>
+        <button onclick="addToEntry(5)">5</button>
+        <button onclick="addToEntry(6)">6</button>
+        <button onclick="addToEntry(1)">1</button>
+        <button onclick="addToEntry(2)">2</button>
+        <button onclick="addToEntry(3)">3</button>
+        <button onclick="addToEntry(0)">0</button>
+        <button onclick="addToEntry('000')">000</button>
+        <button onclick="clearEntry()">Clear</button>
+    </div>
+
+    <script>
+        const lowerLimit = 675000;
+        const upperLimit = 695000;
+        let currentBid = 0;
+
+        function addToEntry(num) {
+            const bidEntry = document.getElementById('bidEntry');
+            bidEntry.value += num;
+        }
+
+        function clearEntry() {
+            document.getElementById('bidEntry').value = '';
+        }
+
+        function submitBid() {
+            const newBid = parseInt(document.getElementById('bidEntry').value);
+            if (isNaN(newBid)) {
+                alert("Please enter a valid number");
+                return;
+            }
+            if (newBid <= currentBid) {
+                alert("New bid must be higher than the current bid");
+                return;
+            }
+            if (newBid < lowerLimit) {
+                alert(`Bid must be at least $${lowerLimit.toLocaleString()}`);
+                return;
+            }
+            if (newBid > upperLimit) {
+                alert(`Bid exceeds your upper limit of $${upperLimit.toLocaleString()}`);
+                return;
+            }
+            currentBid = newBid;
+            document.getElementById('currentBid').textContent = `Current Bid: $${currentBid.toLocaleString()}`;
+            suggestNextBid();
+            clearEntry();
+        }
+
+        function suggestNextBid() {
+            if (currentBid >= upperLimit) {
+                alert(`You've reached your upper limit at $${currentBid.toLocaleString()}!`);
+                return;
+            }
+            const baseIncrement = Math.floor(Math.random() * (3000 - 2000 + 1)) + 2000;
+            const randomHundreds = Math.floor(Math.random() * 10) * 100;
+            const increment = baseIncrement + randomHundreds;
+            const suggestedBid = Math.min(currentBid + increment, upperLimit);
+            document.getElementById('suggestion').textContent = `Suggested next bid: $${suggestedBid.toLocaleString()}`;
+        }
+
+        function resetAuction() {
+            currentBid = 0;
+            document.getElementById('currentBid').textContent = 'Current Bid: $0';
+            document.getElementById('suggestion').textContent = '';
+            clearEntry();
+            alert("The auction has been reset. You can start bidding again.");
+        }
+    </script>
+</body>
+</html>
