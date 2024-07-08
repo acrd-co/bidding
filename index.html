@@ -11,7 +11,7 @@
             margin: 0 auto;
             padding: 20px;
         }
-        #bidEntry {
+        input {
             width: 100%;
             padding: 10px;
             font-size: 18px;
@@ -33,6 +33,24 @@
             font-size: 18px;
             margin-top: 20px;
         }
+        #settingsToggle {
+            display: block;
+            text-align: center;
+            margin: 20px 0;
+            color: #007AFF;
+            text-decoration: none;
+        }
+        #settingsPanel {
+            display: none;
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -44,11 +62,29 @@
         <button onclick="resetAuction()">Reset</button>
     </div>
     <div id="suggestion"></div>
+    
+    <a id="settingsToggle" href="#" onclick="toggleSettings(); return false;">Show Settings</a>
+    
+    <div id="settingsPanel">
+        <label for="lowerLimit">Lower Limit:</label>
+        <input type="number" id="lowerLimit" pattern="[0-9]*" inputmode="numeric">
+        <label for="upperLimit">Upper Limit:</label>
+        <input type="number" id="upperLimit" pattern="[0-9]*" inputmode="numeric">
+        <button onclick="saveSettings()">Save Settings</button>
+    </div>
 
     <script>
-        const lowerLimit = 675000;
-        const upperLimit = 695000;
+        let lowerLimit = 675000;
+        let upperLimit = 695000;
         let currentBid = 0;
+
+        function loadSettings() {
+            lowerLimit = parseInt(localStorage.getItem('lowerLimit')) || 675000;
+            upperLimit = parseInt(localStorage.getItem('upperLimit')) || 695000;
+            document.getElementById('lowerLimit').value = lowerLimit;
+            document.getElementById('upperLimit').value = upperLimit;
+            document.getElementById('currentBid').textContent = `Current Bid: $${currentBid.toLocaleString()}`;
+        }
 
         function submitBid() {
             const newBid = parseInt(document.getElementById('bidEntry').value);
@@ -93,6 +129,37 @@
             document.getElementById('bidEntry').value = '';
             alert("The auction has been reset. You can start bidding again.");
         }
+
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            const toggle = document.getElementById('settingsToggle');
+            if (panel.style.display === 'none' || panel.style.display === '') {
+                panel.style.display = 'block';
+                toggle.textContent = 'Hide Settings';
+            } else {
+                panel.style.display = 'none';
+                toggle.textContent = 'Show Settings';
+            }
+        }
+
+        function saveSettings() {
+            const newLowerLimit = parseInt(document.getElementById('lowerLimit').value);
+            const newUpperLimit = parseInt(document.getElementById('upperLimit').value);
+            
+            if (newLowerLimit >= newUpperLimit) {
+                alert("Lower limit must be less than upper limit");
+                return;
+            }
+
+            lowerLimit = newLowerLimit;
+            upperLimit = newUpperLimit;
+            localStorage.setItem('lowerLimit', lowerLimit);
+            localStorage.setItem('upperLimit', upperLimit);
+            alert("Settings saved successfully");
+            toggleSettings();
+        }
+
+        window.onload = loadSettings;
     </script>
 </body>
 </html>
