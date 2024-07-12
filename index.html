@@ -74,13 +74,13 @@
     </div>
 
     <script>
-        let lowerLimit = 675000;
-        let upperLimit = 695000;
+        let lowerLimit = 0;
+        let upperLimit = 687000;
         let currentBid = 0;
 
         function loadSettings() {
-            lowerLimit = parseInt(localStorage.getItem('lowerLimit')) || 675000;
-            upperLimit = parseInt(localStorage.getItem('upperLimit')) || 695000;
+            lowerLimit = parseInt(localStorage.getItem('lowerLimit')) || 0;
+            upperLimit = parseInt(localStorage.getItem('upperLimit')) || 687000;
             document.getElementById('lowerLimit').value = lowerLimit;
             document.getElementById('upperLimit').value = upperLimit;
             document.getElementById('currentBid').textContent = `Current Bid: $${currentBid.toLocaleString()}`;
@@ -138,7 +138,7 @@
                 toggle.textContent = 'Hide Settings';
             } else {
                 panel.style.display = 'none';
-                toggle.textContent = 'Show Settings';
+                toggle.textContent = 'Show Limits';
             }
         }
 
